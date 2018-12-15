@@ -9,7 +9,6 @@ describe('Day 1', () => {
     test('load all array items', () => {
       expect(loadInput().length).toBe(991);
     });
-
     // FIXME calculates incorrect value
     test.skip('frequency result of real data', () => {
       const frequencies = loadInput();
