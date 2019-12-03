@@ -30,8 +30,8 @@ A new challenge unlocks each day at midnight, the goal is to achieve the daily t
 |   6   |:star::star:|            |
 |   5   |:star::star:|            |
 |   4   |:star::star:|            |
-|   3   |:star::star:|            |
-|   2   |:star::star:|            |
+|   3   |:star::star:|:star::star:|
+|   2   |:star::star:|:star::star:|
 |   1   |:star::star:|:star::star:|
-|**TOTAL**|     27     |     2      |
+|**TOTAL**|     27     |     6     |
 
