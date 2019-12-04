@@ -61,17 +61,17 @@ public class SecureContainer {
     @Override
     public void accept(String password) {
       String[] stringArray = password.split("");
-      boolean found = false;
+//      boolean found = false;
+      int count = 0;
       for (int i = 0; i < stringArray.length - 1; i++) {
         int first = Integer.parseInt(stringArray[i]);
         int neighbor = Integer.parseInt(stringArray[i + 1]);
         if (first == neighbor) {
-          found = true;
-          break;
+          count++;
         }
       }
 
-      if (!found) {
+      if (count % 2 != 1) {
         throw new PasswordNotValidException();
       }
     }
