@@ -21,8 +21,15 @@ public class SecureContainer {
   List<Consumer<String>> rules() {
     return Arrays.asList(
         new PasswordLengthValidation(),
-        new AtLeastTwoAdjacentDigitsAreTheSameValidation(),
-        new DigitsNeverDecreaseValidation());
+        new DigitsNeverDecreaseValidation(),
+        new AtLeastTwoAdjacentDigitsAreTheSameValidation());
+  }
+
+  List<Consumer<String>> rulesPart2() {
+    return Arrays.asList(
+        new PasswordLengthValidation(),
+        new DigitsNeverDecreaseValidation(),
+        new AllRepeatedDigitsAreExactlyTwoDigitsLongValidation());
   }
 
   public List<String> generate(int from, int to) {
@@ -31,6 +38,24 @@ public class SecureContainer {
         .map(String::valueOf)
         .filter(this::isValid)
         .collect(Collectors.toList());
+  }
+
+  public List<String> generatePart2(int from, int to) {
+    return IntStream.range(from, to)
+        .boxed()
+        .map(String::valueOf)
+        .filter(this::isValidPart2)
+        .collect(Collectors.toList());
+  }
+
+  public Boolean isValidPart2(String password) {
+    try {
+      rulesPart2().forEach(rule -> rule.accept(password));
+
+      return true;
+    } catch (PasswordNotValidException e) {
+      return false;
+    }
   }
 
   class PasswordLengthValidation implements Consumer<String> {
@@ -46,13 +71,27 @@ public class SecureContainer {
     @Override
     public void accept(String password) {
       String[] stringArray = password.split("");
-      int first = Integer.parseInt(stringArray[0]);
-      for (int i = 1; i < stringArray.length; i++) {
-        int neighbor = Integer.parseInt(stringArray[i]);
+      for (int i = 0; i < stringArray.length - 1; i++) {
+        int first = Integer.parseInt(stringArray[i]);
+        int neighbor = Integer.parseInt(stringArray[i + 1]);
         if (first > neighbor) {
           throw new PasswordNotValidException();
         }
-        first = neighbor;
+      }
+    }
+  }
+
+  class AllRepeatedDigitsAreExactlyTwoDigitsLongValidation implements Consumer<String> {
+    @Override
+    public void accept(String password) {
+      List<String> validDigits = IntStream.range(1, 10)
+      .boxed()
+      .map(String::valueOf)
+      .filter(d -> password.lastIndexOf(d) - password.indexOf(d) == 1 )
+      .collect(Collectors.toList());
+
+      if (validDigits.isEmpty()) {
+        throw new PasswordNotValidException();
       }
     }
   }
@@ -61,17 +100,17 @@ public class SecureContainer {
     @Override
     public void accept(String password) {
       String[] stringArray = password.split("");
-//      boolean found = false;
-      int count = 0;
+      boolean found = false;
       for (int i = 0; i < stringArray.length - 1; i++) {
         int first = Integer.parseInt(stringArray[i]);
         int neighbor = Integer.parseInt(stringArray[i + 1]);
         if (first == neighbor) {
-          count++;
+          found = true;
+          break;
         }
       }
 
-      if (count % 2 != 1) {
+      if (!found) {
         throw new PasswordNotValidException();
       }
     }
