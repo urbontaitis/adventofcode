@@ -16,6 +16,11 @@ public class IntcodeUpgrade extends Intcode {
     return state;
   }
 
+  public void jumpIfTrue(int opcodeIndex, LinkedList<Integer> state) {
+    int firstIndex = state.get(opcodeIndex + 1);
+    int secondIndex = state.get(opcodeIndex + 2);
+  }
+
 
   public Integer output(int opcodeIndex, LinkedList<Integer> state) {
     int outputIndex = state.get(opcodeIndex + 1);
@@ -62,6 +67,18 @@ public class IntcodeUpgrade extends Intcode {
         int output = output(opcodeIndex, state);
         System.out.println("debug code: " + output);
         return 1;
+      case "5":
+        jumpIfTrue(opcodeIndex, state);
+        return 2;
+      case "6":
+        jumpIfFalse(opcodeIndex, state);
+        return 2;
+      case "7":
+        isLessThan(opcodeIndex, state);
+        return 3;
+      case "8":
+        isEquals(opcodeIndex, state);
+        return 3;
       case "99":
         System.out.println("done... exit");
       default:
@@ -101,26 +118,37 @@ public class IntcodeUpgrade extends Intcode {
 
 
   public int diagnostic(Integer input) {
-    LinkedList<Integer> finalState = new LinkedList<>();
-    finalState.addAll(getDataInput());
+    LinkedList<Integer> state = new LinkedList<>();
+    state.addAll(getDataInput());
     int out = 0;
-    for (int i = 0; i < finalState.size(); i++) {
-      Integer opcode = finalState.get(i);
+    for (int i = 0; i < state.size(); i++) {
+      Integer opcode = state.get(i);
       if (opcode == 1) {
-        sum(i, finalState);
+        sum(i, state);
         i += 3;
       } else if (opcode == 2) {
-        multiply(i, finalState);
+        multiply(i, state);
         i += 3;
       } else if (opcode == 3)   {
-        move(i, finalState, input);
+        move(i, state, input);
         i += 1;
       } else if (opcode == 4) {
-        out = output(i, finalState);
+        out = output(i, state);
         i += 1;
-
+      } else if ( opcode == 5) {
+        jumpIfTrue(i, state);
+        i += 2;
+      } else if ( opcode == 6) {
+        jumpIfFalse(i, state);
+        i += 2;
+      } else if ( opcode == 7) {
+        isLessThan(i, state);
+        i += 3;
+      } else if ( opcode == 8) {
+        isEquals(i, state);
+        i += 3;
       } else if (opcode > 0 && String.valueOf(opcode).length() >= 3) {
-        int steps = parameterMode(i, finalState, input);
+        int steps = parameterMode(i, state, input);
         i += steps;
       } else if (opcode == 99) {
         return out;
@@ -130,5 +158,16 @@ public class IntcodeUpgrade extends Intcode {
     }
 
     throw new IllegalStateException("Nothing is found :(");
+  }
+
+  private void isLessThan(int i, LinkedList<Integer> state) {
+
+  }
+
+  private void isEquals(int i, LinkedList<Integer> state) {
+  }
+
+  private void jumpIfFalse(int i, LinkedList<Integer> state) {
+    
   }
 }
