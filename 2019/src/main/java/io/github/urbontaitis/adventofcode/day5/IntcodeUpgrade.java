@@ -23,7 +23,7 @@ public class IntcodeUpgrade extends Intcode {
   }
 
 
-  public LinkedList<Integer> parameterMode(int opcodeIndex, LinkedList<Integer> state) {
+  public int parameterMode(int opcodeIndex, LinkedList<Integer> state, int input) {
     String[] parameters = String.valueOf(state.get(opcodeIndex)).split("");
     String opcode = parameters[parameters.length - 1];
     int parameterCount = parameters.length - 2;
@@ -42,7 +42,7 @@ public class IntcodeUpgrade extends Intcode {
         secondParameter = Integer.valueOf(parameters[0]);
         break;
       case 1:
-        firstParameter = Integer.valueOf(parameters[1]);
+        firstParameter = Integer.valueOf(parameters[0]);
         break;
       default:
         throw new IllegalArgumentException("unsupported parameters count: " + parameterCount);
@@ -50,9 +50,20 @@ public class IntcodeUpgrade extends Intcode {
 
     switch(opcode) {
       case "1":
-        return sum(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
+        sum(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
+        return 3;
       case "2":
-        return multiply(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
+        multiply(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
+        return 3;
+      case "3":
+        move(opcodeIndex, state, input);
+        return 1;
+      case "4":
+        int output = output(opcodeIndex, state);
+        System.out.println("debug code: " + output);
+        return 1;
+      case "99":
+        System.out.println("done... exit");
       default:
         throw new IllegalArgumentException("unsupported opcode: " + opcode);
 
@@ -89,7 +100,7 @@ public class IntcodeUpgrade extends Intcode {
   }
 
 
-  public LinkedList<Integer> diagnostic(Integer input) {
+  public int diagnostic(Integer input) {
     LinkedList<Integer> finalState = new LinkedList<>();
     finalState.addAll(getDataInput());
     int out = 0;
@@ -107,17 +118,17 @@ public class IntcodeUpgrade extends Intcode {
       } else if (opcode == 4) {
         out = output(i, finalState);
         i += 1;
-//        System.out.println("debug: " + out);
-      } else if (String.valueOf(opcode).length() > 2) {
-        parameterMode(i, finalState);
+
+      } else if (opcode > 0 && String.valueOf(opcode).length() >= 3) {
+        int steps = parameterMode(i, finalState, input);
+        i += steps;
       } else if (opcode == 99) {
-        System.out.println("Debug code is: " + out);
-        break;
+        return out;
       } else {
         throw new IllegalStateException("unknown opcode: " + opcode);
       }
     }
 
-    return finalState;
+    throw new IllegalStateException("Nothing is found :(");
   }
 }

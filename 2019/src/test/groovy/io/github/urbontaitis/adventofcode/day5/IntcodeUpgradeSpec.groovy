@@ -46,17 +46,19 @@ class IntcodeUpgradeSpec extends Specification {
     def "Should support parameter modes: #initialState"() {
         given:
         int opcodeIndex = 0
+        int input = 1
 
         when:
-        LinkedList<Integer> state = testObject.parameterMode(opcodeIndex, initialState)
+        int steps = testObject.parameterMode(opcodeIndex, initialState, input)
 
         then:
-        state == expectedState
+        steps == expectedSteps
+        initialState == expectedState
 
         where:
-        initialState        | expectedState
-        [1002, 4, 3, 4, 33] | [1002, 4, 3, 4, 99]
-        [1101,100,-1,4,0]   | [1101,100,-1,4,99]
+        initialState        | expectedState | expectedSteps
+        [1002, 4, 3, 4, 33] | [1002, 4, 3, 4, 99] | 3
+        [1101,100,-1,4,0]   | [1101,100,-1,4,99] | 3
 
     }
 
@@ -65,9 +67,9 @@ class IntcodeUpgradeSpec extends Specification {
         def input = 1
 
         when:
-        LinkedList<Integer> state = testObject.diagnostic(input)
+        int debugCode = testObject.diagnostic(input)
 
         then:
-        state.first == 7594644
+        debugCode == 12440243
     }
 }
