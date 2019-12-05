@@ -42,6 +42,9 @@ public class Intcode {
         int secondIndex = finalState.get(opcodeIndex + 2);
         int resultIndex = finalState.get(opcodeIndex + 3);
 
+        return multiply(firstIndex, secondIndex, resultIndex, finalState);
+    }
+    protected LinkedList<Integer> multiply(int firstIndex, int secondIndex, int resultIndex, LinkedList<Integer> finalState) {
         Integer sum = finalState.get(firstIndex) * finalState.get(secondIndex);
         finalState.set(resultIndex, sum);
 
@@ -52,7 +55,10 @@ public class Intcode {
         int firstIndex = finalState.get(opcodeIndex + 1);
         int secondIndex = finalState.get(opcodeIndex + 2);
         int resultIndex = finalState.get(opcodeIndex + 3);
+        return sum(firstIndex, secondIndex, resultIndex, finalState);
+    }
 
+    protected LinkedList<Integer> sum(int firstIndex, int secondIndex, int resultIndex, LinkedList<Integer> finalState) {
         Integer sum = finalState.get(firstIndex) + finalState.get(secondIndex);
         finalState.set(resultIndex, sum);
 
