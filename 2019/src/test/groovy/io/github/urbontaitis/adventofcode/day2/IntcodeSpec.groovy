@@ -76,6 +76,6 @@ class IntcodeSpec extends Specification {
         LinkedList<Integer> state = testObject.restoreState(first, second)
 
         then:
-        state.first == 7594644
+        state.first == 7594646
     }
 }
