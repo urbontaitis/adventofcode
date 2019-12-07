@@ -57,9 +57,15 @@ public class IntcodeUpgrade extends Intcode {
   }
 
   public int diagnostic(Integer input) {
+    return executeAmplifier(input, null);
+  }
+
+  public int executeAmplifier(Integer input, Integer phase) {
     LinkedList<Integer> state = new LinkedList<>();
     state.addAll(getDataInput());
     int out = -1;
+    boolean usePhase = phase != null;
+
     int i = 0;
     while (i < state.size()) {
       Integer opcodeParameterized = state.get(i);
@@ -75,7 +81,9 @@ public class IntcodeUpgrade extends Intcode {
         multiply(modeA, modeB, modeC, i, state);
         i += 4;
       } else if (opcode == 3)   {
-        move(modeA, i, state, input);
+        int inputToUse = usePhase ? phase : input;
+        usePhase = false;
+        move(modeA, i, state, inputToUse);
         i += 2;
       } else if (opcode == 4) {
         out = output(modeA, i, state);

@@ -13,12 +13,15 @@ public class AmplificationCircuit {
     }
 
     public Integer calculateThruster(List<Integer> sequences) {
-        IntcodeUpgrade a = new IntcodeUpgrade(state);
-//        int outputA = a.output();
+        int thruster = 0;
+        for (Integer phase : sequences) {
+            thruster = (new IntcodeUpgrade(state)).executeAmplifier(thruster, phase);
+        }
 
+        return thruster;
+    }
 
-
-
+    public Integer findMaxThruster() {
         return 0;
     }
 }
