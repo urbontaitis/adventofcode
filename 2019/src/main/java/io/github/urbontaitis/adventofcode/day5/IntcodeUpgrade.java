@@ -10,20 +10,20 @@ public class IntcodeUpgrade extends Intcode {
     super(dataInput);
   }
 
-  public LinkedList<Integer> move(int modeA, int opcodeIndex, LinkedList<Integer> state, int input) {
+  LinkedList<Integer> move(int modeA, int opcodeIndex, LinkedList<Integer> state, int input) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
 
     state.set(firstParameter, input);
     return state;
   }
 
-  public Integer output(int modeA, int opcodeIndex, LinkedList<Integer> state) {
+  Integer output(int modeA, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
 
     return state.get(firstParameter);
   }
 
-  private LinkedList<Integer> multiply(int firstParameter, int secondParameter, int thirdParameter, int opcodeIndex, LinkedList<Integer> state) {
+  LinkedList<Integer> multiply(int firstParameter, int secondParameter, int thirdParameter, int opcodeIndex, LinkedList<Integer> state) {
     int firstIndex = getIndexByMode(opcodeIndex + 1, firstParameter, state);
     int secondIndex = getIndexByMode(opcodeIndex + 2, secondParameter, state);
     int resultIndex = getIndexByMode(opcodeIndex + 3, thirdParameter, state);
@@ -31,7 +31,7 @@ public class IntcodeUpgrade extends Intcode {
     return multiply(firstIndex, secondIndex, resultIndex, state);
   }
 
-  private LinkedList<Integer> sum(int firstParameter, int secondParameter, int thirdParameter, int opcodeIndex, LinkedList<Integer> state) {
+  LinkedList<Integer> sum(int firstParameter, int secondParameter, int thirdParameter, int opcodeIndex, LinkedList<Integer> state) {
     int firstIndex = getIndexByMode(opcodeIndex + 1, firstParameter, state);
     int secondIndex = getIndexByMode(opcodeIndex + 2, secondParameter, state);
     int resultIndex = getIndexByMode(opcodeIndex + 3, thirdParameter, state);
@@ -104,7 +104,7 @@ public class IntcodeUpgrade extends Intcode {
 
 
 
-  public int jumpIfTrue(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
+  int jumpIfTrue(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
     int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
 
@@ -115,7 +115,7 @@ public class IntcodeUpgrade extends Intcode {
     }
   }
 
-  private void isLessThan(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
+  void isLessThan(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
     int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
     int thirdParameter = getIndexByMode(opcodeIndex + 3, modeC, state);
@@ -128,7 +128,7 @@ public class IntcodeUpgrade extends Intcode {
 
   }
 
-  private void isEquals(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
+  void isEquals(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
     int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
     int thirdParameter = getIndexByMode(opcodeIndex + 3, modeC, state);
@@ -141,7 +141,7 @@ public class IntcodeUpgrade extends Intcode {
 
   }
 
-  private int jumpIfFalse(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
+  int jumpIfFalse(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
     int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
 
