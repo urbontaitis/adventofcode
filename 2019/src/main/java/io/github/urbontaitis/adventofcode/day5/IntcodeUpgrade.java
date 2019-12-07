@@ -10,83 +10,17 @@ public class IntcodeUpgrade extends Intcode {
     super(dataInput);
   }
 
-  public LinkedList<Integer> move(int opcodeIndex, LinkedList<Integer> state, int input) {
-    int moveToIndex = state.get(opcodeIndex + 1);
-    state.set(moveToIndex, input);
+  public LinkedList<Integer> move(int modeA, int opcodeIndex, LinkedList<Integer> state, int input) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
+
+    state.set(firstParameter, input);
     return state;
   }
 
-  public void jumpIfTrue(int opcodeIndex, LinkedList<Integer> state) {
-    int firstIndex = state.get(opcodeIndex + 1);
-    int secondIndex = state.get(opcodeIndex + 2);
-  }
+  public Integer output(int modeA, int opcodeIndex, LinkedList<Integer> state) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
 
-
-  public Integer output(int opcodeIndex, LinkedList<Integer> state) {
-    int outputIndex = state.get(opcodeIndex + 1);
-    return state.get(outputIndex);
-  }
-
-
-  public int parameterMode(int opcodeIndex, LinkedList<Integer> state, int input) {
-    String[] parameters = String.valueOf(state.get(opcodeIndex)).split("");
-    String opcode = parameters[parameters.length - 1];
-    int parameterCount = parameters.length - 2;
-    int firstParameter = 0;
-    int secondParameter = 0;
-    int thirdParameter = 0;
-
-    switch(parameterCount) {
-      case 3:
-        firstParameter = Integer.valueOf(parameters[2]);
-        secondParameter = Integer.valueOf(parameters[1]);
-        thirdParameter = Integer.valueOf(parameters[0]);
-        break;
-      case 2:
-        firstParameter = Integer.valueOf(parameters[1]);
-        secondParameter = Integer.valueOf(parameters[0]);
-        break;
-      case 1:
-        firstParameter = Integer.valueOf(parameters[0]);
-        break;
-      default:
-        throw new IllegalArgumentException("unsupported parameters count: " + parameterCount);
-    }
-
-    switch(opcode) {
-      case "1":
-        sum(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
-        return 3;
-      case "2":
-        multiply(firstParameter, secondParameter, thirdParameter, opcodeIndex, state);
-        return 3;
-      case "3":
-        move(opcodeIndex, state, input);
-        return 1;
-      case "4":
-        int output = output(opcodeIndex, state);
-        System.out.println("debug code: " + output);
-        return 1;
-      case "5":
-        jumpIfTrue(opcodeIndex, state);
-        return 2;
-      case "6":
-        jumpIfFalse(opcodeIndex, state);
-        return 2;
-      case "7":
-        isLessThan(opcodeIndex, state);
-        return 3;
-      case "8":
-        isEquals(opcodeIndex, state);
-        return 3;
-      case "99":
-        System.out.println("done... exit");
-      default:
-        throw new IllegalArgumentException("unsupported opcode: " + opcode);
-
-    }
-
-//    return state;
+    return state.get(firstParameter);
   }
 
   private LinkedList<Integer> multiply(int firstParameter, int secondParameter, int thirdParameter, int opcodeIndex, LinkedList<Integer> state) {
@@ -116,41 +50,49 @@ public class IntcodeUpgrade extends Intcode {
     }
   }
 
+  private LinkedList<Integer> temp;
+
+  public LinkedList<Integer> getTemp() {
+    return temp;
+  }
 
   public int diagnostic(Integer input) {
     LinkedList<Integer> state = new LinkedList<>();
     state.addAll(getDataInput());
-    int out = 0;
-    for (int i = 0; i < state.size(); i++) {
-      Integer opcode = state.get(i);
+    int out = -1;
+    int i = 0;
+    while (i < state.size()) {
+      Integer opcodeParameterized = state.get(i);
+      int opcode = opcodeParameterized % 100;
+      int modeA = opcodeParameterized / 100 % 10;
+      int modeB = opcodeParameterized / 1000 % 10;
+      int modeC = opcodeParameterized / 10000 % 10;
+
       if (opcode == 1) {
-        sum(i, state);
-        i += 3;
+        sum(modeA, modeB, modeC, i, state);
+        i += 4;
       } else if (opcode == 2) {
-        multiply(i, state);
-        i += 3;
+        multiply(modeA, modeB, modeC, i, state);
+        i += 4;
       } else if (opcode == 3)   {
-        move(i, state, input);
-        i += 1;
+        move(modeA, i, state, input);
+        i += 2;
       } else if (opcode == 4) {
-        out = output(i, state);
-        i += 1;
+        out = output(modeA, i, state);
+        System.out.println("Output: " + out);
+        i += 2;
       } else if ( opcode == 5) {
-        jumpIfTrue(i, state);
-        i += 2;
+        i = jumpIfTrue(modeA, modeB, i, state);
       } else if ( opcode == 6) {
-        jumpIfFalse(i, state);
-        i += 2;
+        i = jumpIfFalse(modeA, modeB, i, state);
       } else if ( opcode == 7) {
-        isLessThan(i, state);
-        i += 3;
+        isLessThan(modeA, modeB, modeC, i, state);
+        i += 4;
       } else if ( opcode == 8) {
-        isEquals(i, state);
-        i += 3;
-      } else if (opcode > 0 && String.valueOf(opcode).length() >= 3) {
-        int steps = parameterMode(i, state, input);
-        i += steps;
+        isEquals(modeA, modeB, modeC, i, state);
+        i += 4;
       } else if (opcode == 99) {
+        temp = state;
         return out;
       } else {
         throw new IllegalStateException("unknown opcode: " + opcode);
@@ -160,14 +102,53 @@ public class IntcodeUpgrade extends Intcode {
     throw new IllegalStateException("Nothing is found :(");
   }
 
-  private void isLessThan(int i, LinkedList<Integer> state) {
+
+
+  public int jumpIfTrue(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
+    int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
+
+    if (state.get(firstParameter) != 0) {
+      return state.get(secondParameter);
+    } else {
+      return opcodeIndex + 3;
+    }
+  }
+
+  private void isLessThan(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
+    int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
+    int thirdParameter = getIndexByMode(opcodeIndex + 3, modeC, state);
+
+    if (state.get(firstParameter) < state.get(secondParameter)) {
+      state.set(thirdParameter, 1);
+    } else {
+      state.set(thirdParameter, 0);
+    }
 
   }
 
-  private void isEquals(int i, LinkedList<Integer> state) {
+  private void isEquals(int modeA, int modeB, int modeC, int opcodeIndex, LinkedList<Integer> state) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
+    int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
+    int thirdParameter = getIndexByMode(opcodeIndex + 3, modeC, state);
+
+    if (state.get(firstParameter).equals(state.get(secondParameter))) {
+      state.set(thirdParameter, 1);
+    } else {
+      state.set(thirdParameter, 0);
+    }
+
   }
 
-  private void jumpIfFalse(int i, LinkedList<Integer> state) {
-    
+  private int jumpIfFalse(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
+    int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
+    int secondParameter = getIndexByMode(opcodeIndex + 2, modeB, state);
+
+    if (state.get(firstParameter) == 0) {
+      return state.get(secondParameter);
+    } else {
+      return opcodeIndex + 3;
+    }
   }
 }
