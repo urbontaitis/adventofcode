@@ -2,7 +2,9 @@ package io.github.urbontaitis.adventofcode.day7;
 
 import io.github.urbontaitis.adventofcode.day5.IntcodeUpgrade;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class AmplificationCircuit {
@@ -15,6 +17,10 @@ public class AmplificationCircuit {
 
   public Integer calculateThruster(List<Integer> sequences) {
     int thruster = 0;
+    return calculateThruster(thruster, sequences);
+  }
+
+  public Integer calculateThruster(int thruster, List<Integer> sequences) {
     for (Integer phase : sequences) {
       thruster = (new IntcodeUpgrade(state)).executeAmplifier(thruster, phase);
     }
@@ -22,11 +28,11 @@ public class AmplificationCircuit {
     return thruster;
   }
 
-  public Integer findMaxThruster() {
+  public Integer findMaxThruster(String sequenceTemplate) {
     int maxThruster = 0;
-    List<List<Integer>> allSequences = generateSequences();
+    List<List<Integer>> allSequences = generateSequences(sequenceTemplate);
 
-    for(List<Integer> sequences : allSequences) {
+    for (List<Integer> sequences : allSequences) {
       int thruster = calculateThruster(sequences);
       if (thruster > maxThruster) {
         maxThruster = thruster;
@@ -36,8 +42,24 @@ public class AmplificationCircuit {
     return maxThruster;
   }
 
-  private List<List<Integer>> generateSequences() {
-    String[] base = "01234".split("");
+  public Integer findMaxThrusterWithFeedBackLoop(String sequenceTemplate) {
+    int maxThruster = 0;
+    List<List<Integer>> allSequences = generateSequences(sequenceTemplate);
+    int thruster = 0;
+    while (thruster > maxThruster) {
+      for (List<Integer> sequences : allSequences) {
+        thruster = calculateThruster(thruster, sequences);
+        if (thruster > maxThruster) {
+          maxThruster = thruster;
+        }
+      }
+    }
+
+    return maxThruster;
+  }
+
+  private List<List<Integer>> generateSequences(String sequenceTemplate) {
+    String[] base = sequenceTemplate.split("");
     List<String> strings = new ArrayList<>();
     permute(base, base.length, strings);
 
@@ -45,7 +67,7 @@ public class AmplificationCircuit {
 
     for (String s : strings) {
       List<Integer> integers =
-          Arrays.asList(s.split(",")).stream().map(Integer::valueOf).collect(Collectors.toList());
+          Arrays.stream(s.split(",")).map(Integer::valueOf).collect(Collectors.toList());
       result.add(integers);
     }
 
@@ -72,5 +94,25 @@ public class AmplificationCircuit {
         }
       }
     }
+  }
+
+  public Integer feedbackLoopTemp(List<Integer> sequences, Integer integer) {
+    int maxThruster = 0;
+//    int thruster = 0;
+//    IntcodeUpgrade a = new IntcodeUpgrade(state);
+//    thruster = a.executeAmplifier(thruster, sequences.get(0));
+//    IntcodeUpgrade b = new IntcodeUpgrade(state);
+//    thruster = b.executeAmplifier(thruster, sequences.get(1));
+//    IntcodeUpgrade c = new IntcodeUpgrade(state);
+//    thruster = c.executeAmplifier(thruster, sequences.get(2));
+//    IntcodeUpgrade d = new IntcodeUpgrade(state);
+//    thruster = d.executeAmplifier(thruster, sequences.get(3));
+//    IntcodeUpgrade e = new IntcodeUpgrade(state);
+//    thruster = e.executeAmplifier(thruster, sequences.get(4));
+
+
+
+
+    return maxThruster;
   }
 }

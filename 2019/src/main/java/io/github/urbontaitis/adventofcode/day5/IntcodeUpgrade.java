@@ -6,6 +6,8 @@ import java.util.List;
 
 public class IntcodeUpgrade extends Intcode {
 
+  private boolean halted = false;
+
   public IntcodeUpgrade(List<Integer> dataInput) {
     super(dataInput);
   }
@@ -67,7 +69,7 @@ public class IntcodeUpgrade extends Intcode {
     boolean usePhase = phase != null;
 
     int i = 0;
-    while (i < state.size()) {
+    while (inProgress()) {
       Integer opcodeParameterized = state.get(i);
       int opcode = opcodeParameterized % 100;
       int modeA = opcodeParameterized / 100 % 10;
@@ -101,6 +103,7 @@ public class IntcodeUpgrade extends Intcode {
         i += 4;
       } else if (opcode == 99) {
         temp = state;
+        setInProgress(false);
         return out;
       } else {
         throw new IllegalStateException("unknown opcode: " + opcode);
@@ -109,8 +112,6 @@ public class IntcodeUpgrade extends Intcode {
 
     throw new IllegalStateException("Nothing is found :(");
   }
-
-
 
   int jumpIfTrue(int modeA, int modeB, int opcodeIndex, LinkedList<Integer> state) {
     int firstParameter = getIndexByMode(opcodeIndex + 1, modeA, state);
@@ -158,5 +159,13 @@ public class IntcodeUpgrade extends Intcode {
     } else {
       return opcodeIndex + 3;
     }
+  }
+
+  public boolean inProgress() {
+    return !halted;
+  }
+
+  public void setInProgress(boolean inProgress) {
+    this.halted = !inProgress;
   }
 }
