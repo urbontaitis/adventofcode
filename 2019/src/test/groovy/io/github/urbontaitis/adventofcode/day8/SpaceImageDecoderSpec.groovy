@@ -94,7 +94,7 @@ class SpaceImageDecoderSpec extends Specification {
         List<List<Integer>> grouped = sid.transpose(layers)
 
         when:
-        List<Integer> filtered = sid.filterLayers(grouped);
+        List<Integer> filtered = sid.firstVisiblePixel(grouped);
 
         then:
         filtered == expectedGrouped

@@ -64,7 +64,7 @@ class SpaceImageDecoder {
     return result;
   }
 
-  public List<Integer> filterLayers(List<List<Integer>> lists) {
+  public List<Integer> firstVisiblePixel(List<List<Integer>> lists) {
     List<Integer> filtered = new ArrayList<>();
 
     for (List<Integer> l : lists) {
@@ -82,7 +82,7 @@ class SpaceImageDecoder {
   public List<String> createImage(Integer width, Integer height) {
     List<List<Integer>> decoded = decode(width, height);
     List<List<Integer>> grouped = transpose(decoded);
-    List<Integer> filtered = filterLayers(grouped);
+    List<Integer> filtered = firstVisiblePixel(grouped);
 
     return filtered.stream()
         .map(
