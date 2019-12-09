@@ -1,5 +1,6 @@
 package io.github.urbontaitis.adventofcode.day6
 
+import spock.lang.Ignore
 import spock.lang.Specification
 
 class UniversalOrbitMapSpec extends Specification {
@@ -10,6 +11,7 @@ class UniversalOrbitMapSpec extends Specification {
         testObject = new UniversalOrbitMap();
     }
 
+    @Ignore
     def "build tree from the list #list"() {
         when:
         def orbitMap = testObject.build(list)
