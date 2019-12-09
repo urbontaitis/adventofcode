@@ -9,6 +9,9 @@ import java.util.stream.Collectors
 
 class SensorBoostSpec extends Specification {
 
+
+    public static final long INPUT = 1L
+
     List<Long> toLongList(List<Integer> integers) {
         integers.stream().map(Long.&valueOf).collect(Collectors.toList())
     }
@@ -19,7 +22,7 @@ class SensorBoostSpec extends Specification {
         Intcode intcode = new Intcode(dataInput)
 
         when:
-        intcode.diagnostic(1L);
+        intcode.diagnostic(INPUT);
 
         then:
         intcode.getRelativeBase() == expectedRelativeBase
@@ -30,15 +33,30 @@ class SensorBoostSpec extends Specification {
         toLongList([109, -34, 99]) | -34L
     }
 
-
-    @Ignore
     @Unroll
     def "Test intcode computer with new features: #dataInput"() {
         given:
         Intcode intcode = new Intcode(dataInput)
 
         when:
-        def output = intcode.diagnostic(1);
+        def output = intcode.diagnostic(INPUT);
+
+        then:
+        output == expectedOutput
+
+        where:
+        dataInput                                                                              | expectedOutput
+        toLongList([1102, 34915192, 34915192, 7, 4, 7, 99, 0])                                 | 1219070632396864L
+        toLongList([104, 1125899906842624, 99])                                                | 1125899906842624L
+    }
+
+    @Ignore
+    def "Test intcode computer with new features without input"() {
+        given:
+        Intcode intcode = new Intcode(dataInput)
+
+        when:
+        def output = intcode.diagnostic(null);
 
         then:
         output == expectedOutput
@@ -46,7 +64,5 @@ class SensorBoostSpec extends Specification {
         where:
         dataInput                                                                              | expectedOutput
         toLongList([109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]) | 1L
-        toLongList([1102, 34915192, 34915192, 7, 4, 7, 99, 0])                                 | 1L
-        toLongList([104, 1125899906842624, 99])                                                | 1125899906842624L
     }
 }

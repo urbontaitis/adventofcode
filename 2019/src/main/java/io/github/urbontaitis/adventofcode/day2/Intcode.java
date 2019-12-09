@@ -2,6 +2,8 @@ package io.github.urbontaitis.adventofcode.day2;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class Intcode {
 
@@ -26,11 +28,20 @@ public class Intcode {
   }
 
   Long getValueFromStateAt(Long index) {
+    increaseStateSize(index);
     return state.get(index.intValue());
   }
 
   void setValueToStateAt(Long index, Long value) {
+    increaseStateSize(index);
     state.set(index.intValue(), value);
+  }
+
+  void increaseStateSize(Long index) {
+    if (index.intValue() >= state.size()) {
+      List<Long> temp = LongStream.range(Long.valueOf(state.size()), index + 1L).boxed().collect(Collectors.toList());
+      state.addAll(temp);
+    }
   }
 
   protected List<Long> multiply(Long opcodeIndex) {
@@ -145,7 +156,6 @@ public class Intcode {
         i += 2;
       } else if (opcode == 4) {
         out = output(modeA, i);
-        System.out.println("Output: " + out);
         i += 2;
       } else if (opcode == 5) {
         i = jumpIfTrue(modeA, modeB, i);
