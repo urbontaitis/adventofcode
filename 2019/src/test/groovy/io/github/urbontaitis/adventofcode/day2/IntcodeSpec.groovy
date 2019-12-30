@@ -8,74 +8,84 @@ import java.util.stream.Collectors
 
 class IntcodeSpec extends Specification {
 
-    Intcode testObject
+    private static final long opcodeIndex = 0L
 
-    def setup() {
-        String dataInputPath = "day2/input.txt"
-        String file = FileReader.readFile(dataInputPath)
-        List<Integer> dataInput = Arrays.stream(file.split(",")).map(Integer.&valueOf).collect(Collectors.toList())
-        testObject = new Intcode(dataInput)
+    List<Long> toLongList(List<Integer> integers) {
+        integers.stream().map(Long.&valueOf).collect(Collectors.toList())
     }
 
     def "Loads initial data"() {
+        given:
+        String dataInputPath = "day2/input.txt"
+        String file = FileReader.readFile(dataInputPath)
+        List<Long> dataInput = Arrays.stream(file.split(",")).map(Long.&valueOf).collect(Collectors.toList())
+        Intcode testObject = new Intcode(dataInput)
+
         when:
-        List<Integer> data = testObject.getDataInput()
+        List<Long> data = testObject.getDataInput()
 
         then:
         data != null
         data.size() == 145
     }
 
-    def "Proceed 1 opcode - sum" () {
+    def "Proceed 1 opcode - sum"() {
         given:
-        LinkedList<Integer> initialState = [1,0,0,0,99]
-        int opcodeIndex = 0
+        List<Long> initialState = toLongList([1, 0, 0, 0, 99])
+        Intcode testObject = new Intcode(initialState)
 
         when:
-        LinkedList<Integer> state = testObject.sum(opcodeIndex, initialState)
+        List<Long> state = testObject.sum(opcodeIndex)
 
         then:
-        state == [2,0,0,0,99]
+        state == toLongList([2, 0, 0, 0, 99])
     }
 
     def "Proceed 2 opcode - sum"() {
         given:
-        LinkedList<Integer> initialState = [2,3,0,3,99]
-        int opcodeIndex = 0
+        List<Long> initialState = toLongList([2, 3, 0, 3, 99])
+        Intcode testObject = new Intcode(initialState)
 
         when:
-        LinkedList<Integer> state = testObject.multiply(opcodeIndex, initialState)
+        List<Long> state = testObject.multiply(opcodeIndex)
 
         then:
-        state == [2,3,0,6,99]
+        state == toLongList([2, 3, 0, 6, 99])
     }
 
     @Unroll
     def "Read program state: #initialState"() {
+        given:
+        Intcode testObject = new Intcode(initialState)
+
         when:
-        LinkedList<Integer> state = testObject.executeState(initialState)
+        testObject.executeState()
 
         then:
-        state == finalState
+        testObject.getTemp() == finalState
 
         where:
-        initialState | finalState
-        [1,0,0,0,99] | [2,0,0,0,99]
-        [2,3,0,3,99] | [2,3,0,6,99]
-        [2,4,4,5,99,0] | [2,4,4,5,99,9801]
-        [1,1,1,4,99,5,6,0,99] | [30,1,1,4,2,5,6,0,99]
-        [1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50] | [3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50]
+        initialState                                           | finalState
+        toLongList([1, 0, 0, 0, 99])                           | toLongList([2, 0, 0, 0, 99])
+        toLongList([2, 3, 0, 3, 99])                           | toLongList([2, 3, 0, 6, 99])
+        toLongList([2, 4, 4, 5, 99, 0])                        | toLongList([2, 4, 4, 5, 99, 9801])
+        toLongList([1, 1, 1, 4, 99, 5, 6, 0, 99])              | toLongList([30, 1, 1, 4, 2, 5, 6, 0, 99])
+        toLongList([1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50]) | toLongList([3500, 9, 10, 70, 2, 3, 11, 0, 99, 30, 40, 50])
     }
 
-    def "Restore state" () {
+    def "Restore state"() {
         given:
+        String dataInputPath = "day2/input.txt"
+        String file = FileReader.readFile(dataInputPath)
+        List<Long> dataInput = Arrays.stream(file.split(",")).map(Long.&valueOf).collect(Collectors.toList())
+        Intcode testObject = new Intcode(dataInput)
         def first = 12
-        def second  = 2
+        def second = 2
 
         when:
-        LinkedList<Integer> state = testObject.restoreState(first, second)
+        testObject.restoreState(first, second)
 
         then:
-        state.first == 7594644
+        testObject.getTemp().get(0) == 7594646L
     }
 }
