@@ -3,7 +3,7 @@ package lt.urbontaitis.adventofcode.day1
 import lt.urbontaitis.adventofcode.common.FileReader
 import spock.lang.Specification;
 
-class ExpanseReportCalculator extends Specification {
+class ExpenseReportCalculatorSpec extends Specification {
 
     ExpenseReportCalculator testObject = new ExpenseReportCalculator()
 
