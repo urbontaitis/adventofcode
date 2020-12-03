@@ -5,28 +5,23 @@ import java.util.stream.Collectors;
 
 class MapScanner {
 
-  private final List<String[]> inputData;
+  private final List<char[]> inputData;
 
   MapScanner(List<String> inputData) {
-    this.inputData = inputData.stream().map(MapScanner::transform).collect(Collectors.toList());
-  }
-
-  private static String[] transform(String s) {
-    return s.split("");
+    this.inputData = inputData.stream().map(String::toCharArray).collect(Collectors.toList());
   }
 
   record Slope(int right, int down) {}
 
   Long countTrees(Slope slope) {
     var count = 0L;
-    var lines = inputData;
-    int rowLength = lines.get(0).length;
+    int rowLength = inputData.get(0).length;
     int x = slope.right;
     int y = slope.down;
-    while (y < lines.size()) {
-      var location = lines.get(y)[x];
+    while (y < inputData.size()) {
+      var location = inputData.get(y)[x];
 
-      if (location.equals("#")) {
+      if (location == '#') {
         count++;
       }
       x += slope.right;
