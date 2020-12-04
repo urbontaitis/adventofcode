@@ -7,7 +7,7 @@ class PassportValidatorSpec extends Specification {
 
     def "Sample 1"() {
         given:
-        def inputData = FileReader.readFile("day4-sample.txt")
+        def inputData = FileReader.readFile("day4/sample.txt")
         PassportValidator testObject = new PassportValidator(inputData)
 
         when:
@@ -31,7 +31,7 @@ class PassportValidatorSpec extends Specification {
 
     def "Sample 2"() {
         given:
-        def inputData = FileReader.readFile("day4-sample-2.txt")
+        def inputData = FileReader.readFile("day4/sample-2.txt")
         PassportValidator testObject = new PassportValidator(inputData)
 
         when:
