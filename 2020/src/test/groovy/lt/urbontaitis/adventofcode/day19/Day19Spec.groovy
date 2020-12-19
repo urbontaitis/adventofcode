@@ -14,7 +14,7 @@ class Day19Spec extends Specification {
         def response = testObject.doSomething()
 
         then:
-        !response
+        2 == response
     }
 
     def "Part 1"() {
@@ -26,19 +26,19 @@ class Day19Spec extends Specification {
         def response = testObject.doSomething()
 
         then:
-        !response
+        144 == response
     }
 
     def "Sample 2"() {
         given:
-        def inputData = FileReader.readFileToList("day19/sample.txt")
+        def inputData = FileReader.readFileToList("day19/sample-2.txt")
         def testObject = new Day19(inputData)
 
         when:
         def response = testObject.doSomething2()
 
         then:
-        !response
+        12 == response
     }
 
     def "Part 2"() {
@@ -50,7 +50,7 @@ class Day19Spec extends Specification {
         def response = testObject.doSomething2()
 
         then:
-        !response
+        260 == response
 
 
     }
