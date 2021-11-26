@@ -25,9 +25,9 @@ public class Day17 {
 
     for(int i = 0; i < 6; i++) {
         char[][][] marked = new char[size][size][size];
-        for(int j, z, y, x = 0; j < size; j++) {
-
-        }
+//        for(int j, z, y, x = 0; j < size; j++) {
+//
+//        }
     }
 
     return null;

@@ -96,7 +96,7 @@ public class Day16 {
     Map<Integer, String> fieldPositions = new HashMap<>();
     for(var ticket : goodNearby) {
       for(var number : ticket) {
-        rules.stream().filter(rule -> { number >= })
+//        rules.stream().filter(rule -> { number >= })
       }
     }
 //    var ruleOrderCandidates = new ArrayList<>();
