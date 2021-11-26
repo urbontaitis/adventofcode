@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'idea'
+}
+
+defaultTasks 'build'
+
+group = 'lt.urbontaitis.adventofcode'
+version '2021-SNAPSHOT'
+description = 'Advent of Code 2021'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.codehaus.groovy:groovy:3.0.9'
+    testImplementation platform('org.spockframework:spock-bom:2.0-groovy-3.0')
+    testImplementation 'org.spockframework:spock-core'
+
+    testImplementation 'org.hamcrest:hamcrest-core:2.2'   // only necessary if Hamcrest matchers are used
+    testRuntimeOnly 'net.bytebuddy:byte-buddy:1.12.2' // allows mocking of classes (in addition to interfaces)
+    testRuntimeOnly 'org.objenesis:objenesis:3.2' // allows mocking of classes without default constructor (together with ByteBuddy or CGLIB)
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+        events = ['passed', 'failed', 'skipped']
+    }
+}
