@@ -10,7 +10,10 @@ class FileReaderSpec extends Specification {
         def resource = FileReader.readFile("dummy.txt")
 
         then:
-        resource == "1,2,3,4"
+        resource == """1
+2
+3
+4"""
     }
 
     def "FileReader reads file content as List<String>" () {

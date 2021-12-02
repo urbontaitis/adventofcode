@@ -4,7 +4,13 @@ import java.util.List;
 
 public class SonarSweep {
 
-    public Integer countDepthMeasurementIncrease(List<Integer> numbers) {
+    private final List<Integer> numbers;
+
+    public SonarSweep(String data) {
+        this.numbers = data.lines().map(Integer::valueOf).toList();
+    }
+
+    public Integer countDepthMeasurementIncrease() {
         int measurementCount = 0;
         for (int i = 0; i < numbers.size() - 1; i++) {
             var first = numbers.get(i);
@@ -16,7 +22,7 @@ public class SonarSweep {
         return measurementCount;
     }
 
-    public Integer threeMeasurementsSlidingWindow(List<Integer> numbers) {
+    public Integer threeMeasurementsSlidingWindow() {
         int measurementCount = 0;
         for (int i = 0; i < numbers.size() - 3; i++) {
             var firstA = numbers.get(i);

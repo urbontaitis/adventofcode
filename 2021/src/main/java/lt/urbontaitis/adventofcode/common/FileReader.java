@@ -22,7 +22,7 @@ public class FileReader {
     public static String readFile(String fileName) throws IOException {
         final InputStream stream = FileReader.class.getResourceAsStream("/" + fileName);
         try (BufferedReader bf = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-            return bf.lines().collect(Collectors.joining(","));
+            return bf.lines().collect(Collectors.joining("\n"));
         }
     }
 
